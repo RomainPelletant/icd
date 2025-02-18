@@ -1,0 +1,34 @@
+/* Copyright(c) 2024 Guerbet
+ * SPDX-License-Identifier: Closed
+*/
+
+/* Injector 
+struct InjectorConfiguration
+{
+    boolean octet_value;
+    long long_value;
+    string string_value;
+};
+
+/* Network configuration */
+struct NetworkConfiguration
+{
+    string ip_adress[2];
+    sequence<long> seq;
+    sequence<long, 16> seq16;
+};
+
+enum InjectionControllerType {
+    UNKNOWN,
+    POWERHEAD,
+    CONSOLE,
+	SCANNER_INTERFACE
+};
+
+/* DICOM configuration */
+struct DICOMConfiguration
+{
+    InjectionControllerType enum_test;
+    @optional boolean boolean_test;
+    @optional string string_value;
+};
