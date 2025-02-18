@@ -1,0 +1,155 @@
+/* Copyright(c) 2024 Guerbet
+ * SPDX-License-Identifier: Closed
+*/
+
+const int32 MAX_PHASES = 12;
+
+@extensibility(APPENDABLE)
+enum InjectionControllerType {
+    UNKNOWN,
+    POWERHEAD,
+    CONSOLE,
+	SCANNER_INTERFACE
+};
+
+@extensibility(APPENDABLE)
+struct OwnershipRequestType
+{
+    @key string client_id;
+	InjectionControllerType requester_type;
+	unsigned long current_strength;
+};
+
+@extensibility(APPENDABLE)
+struct OwnershipReplyType
+{
+    @key string client_id;
+	boolean ownership_allowed;
+	unsigned long strength;
+};
+
+@extensibility(APPENDABLE)
+struct CurrentOwnershipStateType
+{
+    InjectionControllerType requester_type;
+    unsigned long current_strength;
+};
+
+enum PhaseType {
+    NoTypeConfigured,
+    Injection,
+    Delay,
+	Wait,
+    TestBolus,
+    OptiBolus
+};
+
+struct Phase
+{
+    PhaseType type;
+    double flowrate;
+    double volume;
+    uint8 percentConstrast;
+};
+
+struct InjectionProtocol
+{
+    uint32 scanDelay;
+    uint32 injectDelay;
+    uint16 maxPressure;
+    sequence<Phase, MAX_PHASES> phases;
+};
+
+enum InjectorStateType {
+    Idle,
+    IdleConfiguration,
+    InjectorReady,
+	ReadyConfiguration,
+    ProcedureExecuting,
+    Hold,
+    HoldConfiguration,
+    InjectionCompleted,
+    ProcedureCompleted,
+    Error
+};
+
+struct POSTType
+{
+    boolean RT;
+    boolean MCB[3];
+    boolean PH;
+    @optional boolean Console;
+    @optional boolean SiBox;
+};
+
+struct InjectorState
+{
+    InjectorStateType state;
+    POSTType POST;
+};
+
+enum InjectorActionType {
+    Stop,
+	Homing,
+    PrepareToFill,
+    AutoFillAndPurge,
+    PrimeDayset,
+    RemoveDayset,
+    PurgeDayset,
+    FlushDayset,
+    ManualExpelStart,
+    Enable,
+    StartInjection,
+    PauseInjection
+};
+
+struct InjectorActionRequestType
+{
+    @key string clientID;
+    InjectorStateType actionRequested;
+};
+
+struct ErrorCluster
+{
+    uint32 errorCode;
+    //severity
+    //string description
+};
+
+struct InjectorActionReplyType
+{
+    @key string clientID;
+    boolean ack; //todo error cluster
+    ErrorCluster error;
+};
+
+struct InjectionStatusType
+{
+    double remainingVolume[3];
+    uint8 currentPhaseNumber;
+    double currentFlowrate;
+    double currentVolumeDelivered;
+    int16 currentPressure;
+};
+
+struct InjectionResults
+{
+    int16 maxAchievePressure;
+    double totalVolumeDelivered;
+    double maxAchieveFlowrate;
+};
+
+struct PhaseResults
+{
+    double totalVolumeDelivered;
+    double maxAchieveFlowrate;
+    int16 maxAchievePressure;
+    uint8 currentPhaseIndex;
+};
+
+struct UserConfirmationType
+{
+    boolean patientLineConfirmation;
+    boolean airConfirmation;
+    boolean newPatient;
+};
