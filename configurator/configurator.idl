@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Closed
 */
 
-/* Injector 
+/* Injector */
 struct InjectorConfiguration
 {
     boolean octet_value;
